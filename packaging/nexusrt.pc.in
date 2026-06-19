@@ -1,0 +1,13 @@
+# pkg-config template for NexusRT
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=${prefix}
+libdir=${exec_prefix}/@CMAKE_INSTALL_LIBDIR@
+includedir=${prefix}/@CMAKE_INSTALL_INCLUDEDIR@
+
+Name: NexusRT
+Description: Firmware-centric, OS-bypass runtime for end-to-end LLM pipelines
+Version: @PROJECT_VERSION@
+URL: https://github.com/nexusrt/nexusrt
+Requires.private: @NEXUSRT_PKG_REQUIRES@
+Libs: -L${libdir} -lnexusrt
+Cflags: -I${includedir}/nexusrt

@@ -1,0 +1,77 @@
+# NexusRT pre-commit hooks
+# Install with: pre-commit install
+# Run with:    pre-commit run --all-files
+---
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+        args: [--allow-multiple-documents]
+        exclude: ^packaging/nexusrt\.pc\.in$
+      - id: check-toml
+      - id: check-added-large-files
+        args: [--maxkb=1024]
+        exclude: ^tests/.*\.(pt|safetensors|bin)$
+      - id: check-merge-conflict
+      - id: check-case-conflict
+      - id: detect-private-key
+      - id: mixed-line-ending
+        args: [--fix=lf]
+
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v3.2.0
+    hooks:
+      - id: conventional-pre-commit
+        stages: [commit-msg]
+
+  # C++ / CUDA
+  - repo: https://github.com/pocc/pre-commit-hooks
+    rev: v1.3.5
+    hooks:
+      - id: clang-format
+        args: [--style=file, --in-place]
+        types_or: [c++, c, cuda]
+      - id: clang-tidy
+        args: [--quiet]
+        types_or: [c++, c, cuda]
+        exclude: ^tests/
+
+  # Python
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.5.7
+    hooks:
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+      - id: ruff-format
+
+  # YAML / Markdown
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.41.0
+    hooks:
+      - id: markdownlint-cli
+        args: [--disable=MD013, --disable=MD033]
+
+  # Notebook hygiene
+  - repo: https://github.com/nbQA-dev/nbQA
+    rev: 1.8.7
+    hooks:
+      - id: nbqa-ruff
+      - id: nbqa-isort
+
+  # Local hook: enforce "no torch / tensorflow / jax in src/"
+  - repo: local
+    hooks:
+      - id: no-framework-imports-script
+        name: forbid framework imports in src/
+        entry: packaging/setup_hooks/check_no_framework_imports.sh
+        language: system
+        pass_filenames: false
+        always_run: true
+      - id: cmake-format
+        name: cmake-format
+        entry: cmake-format --in-place
+        language: python
+        types: [cmake]

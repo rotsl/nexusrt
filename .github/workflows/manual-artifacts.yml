@@ -1,0 +1,247 @@
+name: Manual Artifact Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      artifact_label:
+        description: "Label to include in artifact names"
+        required: false
+        default: "manual"
+      run_tests:
+        description: "Run unit tests before uploading artifacts"
+        required: true
+        type: boolean
+        default: true
+      build_docs:
+        description: "Build and upload HTML docs"
+        required: true
+        type: boolean
+        default: true
+      build_cuda:
+        description: "Also compile a CUDA-enabled Linux artifact"
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+env:
+  CMAKE_BUILD_TYPE: Release
+  ARTIFACT_LABEL: ${{ inputs.artifact_label || 'manual' }}
+
+jobs:
+  source-archive:
+    name: Source archive
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create source archives
+        run: |
+          set -euxo pipefail
+          mkdir -p dist
+          short_sha="$(git rev-parse --short HEAD)"
+          git archive \
+            --format=tar.gz \
+            --prefix="nexusrt-${short_sha}/" \
+            -o "dist/nexusrt-source-${ARTIFACT_LABEL}-${short_sha}.tar.gz" \
+            HEAD
+          git archive \
+            --format=zip \
+            --prefix="nexusrt-${short_sha}/" \
+            -o "dist/nexusrt-source-${ARTIFACT_LABEL}-${short_sha}.zip" \
+            HEAD
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nexusrt-source-${{ env.ARTIFACT_LABEL }}
+          path: dist/*
+          if-no-files-found: error
+
+  python-package:
+    name: Python wheel
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install build dependencies
+        run: |
+          python -m pip install -U pip
+          python -m pip install build cmake ninja
+
+      - name: Build Python wheel
+        env:
+          CMAKE_ARGS: >-
+            -DNEXUSRT_ENABLE_CUDA=OFF
+            -DNEXUSRT_ENABLE_METAL=OFF
+            -DNEXUSRT_BUILD_TESTS=OFF
+        run: python -m build packaging --wheel
+
+      - name: Smoke import from wheel
+        if: ${{ inputs.run_tests }}
+        run: |
+          python -m venv /tmp/nexusrt-wheel-test
+          /tmp/nexusrt-wheel-test/bin/python -m pip install -U pip
+          /tmp/nexusrt-wheel-test/bin/python -m pip install packaging/dist/*.whl
+          /tmp/nexusrt-wheel-test/bin/python - <<'PY'
+          import nexusrt
+          print(nexusrt.__version__)
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nexusrt-python-${{ env.ARTIFACT_LABEL }}
+          path: packaging/dist/*
+          if-no-files-found: error
+
+  native-linux:
+    name: Native Linux artifact
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y cmake ninja-build
+
+      - name: Configure
+        run: |
+          cmake -S packaging -B packaging/build -GNinja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DNEXUSRT_ENABLE_CUDA=OFF \
+            -DNEXUSRT_ENABLE_METAL=OFF \
+            -DNEXUSRT_BUILD_TESTS=${{ inputs.run_tests && 'ON' || 'OFF' }}
+
+      - name: Build
+        run: cmake --build packaging/build --parallel
+
+      - name: Test
+        if: ${{ inputs.run_tests }}
+        run: ctest --test-dir packaging/build --output-on-failure
+
+      - name: Install and package
+        run: |
+          set -euxo pipefail
+          short_sha="$(git rev-parse --short HEAD)"
+          prefix="$PWD/dist/nexusrt-linux-x86_64-${ARTIFACT_LABEL}-${short_sha}"
+          cmake --install packaging/build --prefix "$prefix"
+          tar -C dist -czf "${prefix}.tar.gz" "$(basename "$prefix")"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nexusrt-linux-x86_64-${{ env.ARTIFACT_LABEL }}
+          path: dist/*.tar.gz
+          if-no-files-found: error
+
+  native-macos:
+    name: Native macOS artifact
+    runs-on: macos-13
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: brew install cmake ninja
+
+      - name: Configure
+        run: |
+          cmake -S packaging -B packaging/build -GNinja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DNEXUSRT_ENABLE_CUDA=OFF \
+            -DNEXUSRT_ENABLE_METAL=AUTO \
+            -DNEXUSRT_BUILD_TESTS=${{ inputs.run_tests && 'ON' || 'OFF' }}
+
+      - name: Build
+        run: cmake --build packaging/build --parallel
+
+      - name: Test
+        if: ${{ inputs.run_tests }}
+        run: ctest --test-dir packaging/build --output-on-failure
+
+      - name: Install and package
+        run: |
+          set -euxo pipefail
+          short_sha="$(git rev-parse --short HEAD)"
+          prefix="$PWD/dist/nexusrt-macos-x86_64-${ARTIFACT_LABEL}-${short_sha}"
+          cmake --install packaging/build --prefix "$prefix"
+          tar -C dist -czf "${prefix}.tar.gz" "$(basename "$prefix")"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nexusrt-macos-x86_64-${{ env.ARTIFACT_LABEL }}
+          path: dist/*.tar.gz
+          if-no-files-found: error
+
+  native-linux-cuda:
+    name: Native Linux CUDA artifact
+    if: ${{ inputs.build_cuda }}
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install CUDA Toolkit
+        uses: Jimver/cuda-toolkit@v0.2.15
+        with:
+          cuda: "12.4.0"
+          method: network
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y cmake ninja-build
+
+      - name: Configure
+        run: |
+          cmake -S packaging -B packaging/build -GNinja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DNEXUSRT_ENABLE_CUDA=ON \
+            -DNEXUSRT_ENABLE_METAL=OFF \
+            -DNEXUSRT_BUILD_TESTS=OFF \
+            -DCMAKE_CUDA_ARCHITECTURES=60\;75\;80\;90
+
+      - name: Build
+        run: cmake --build packaging/build --parallel
+
+      - name: Install and package
+        run: |
+          set -euxo pipefail
+          short_sha="$(git rev-parse --short HEAD)"
+          prefix="$PWD/dist/nexusrt-linux-cuda12-x86_64-${ARTIFACT_LABEL}-${short_sha}"
+          cmake --install packaging/build --prefix "$prefix"
+          tar -C dist -czf "${prefix}.tar.gz" "$(basename "$prefix")"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nexusrt-linux-cuda12-x86_64-${{ env.ARTIFACT_LABEL }}
+          path: dist/*.tar.gz
+          if-no-files-found: error
+
+  docs:
+    name: HTML docs
+    if: ${{ inputs.build_docs }}
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install doc dependencies
+        run: |
+          python -m pip install -U pip
+          python -m pip install -r docs/requirements.txt
+
+      - name: Build docs
+        run: sphinx-build -W -b html docs build/docs
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nexusrt-docs-html-${{ env.ARTIFACT_LABEL }}
+          path: build/docs
+          if-no-files-found: error

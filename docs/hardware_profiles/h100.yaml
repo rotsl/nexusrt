@@ -1,0 +1,116 @@
+# NVIDIA H100 Hardware Profile
+# ============================================================================
+# Hopper architecture, SXM5 form factor. 80 GB HBM3.
+# TMA + ILC + DSM via Thread Block Clusters. The flagship target for
+# NexusRT.
+
+vendor: nvidia
+architecture: hopper
+compute_capability: "9.0"
+pci_ids:
+  h100_sxm:  ["2330", "2331", "2339"]
+  h100_pcie: ["2339", "233A"]
+
+hbm:
+  capacity_gb: 80
+  bandwidth_gbs: 3352              # ~3.35 TB/s peak
+  type: HBM3
+  burst_length: 64
+  channels: 12
+  page_size_kb: 128                # larger pages exploit HBM3 burst length
+  huge_page_mb: 4
+  prefetch_depth: 8
+
+nvlink:
+  generation: 4
+  bandwidth_gbs: 900
+  num_links: 18
+  topology: fully_connected_8gpu   # DGX H100
+
+sm:
+  count: 132
+  max_threads_per_sm: 2048
+  smem_per_sm_kb: 228
+  smem_config_default: 228KB_sm_0KB_l1   # Hopper allows up to 228KB smem
+  warp_size: 32
+  thread_block_cluster_max_size: 8       # 8 CTAs per cluster
+
+features:
+  tma: true
+  ilc: true
+  dsm: true
+  thread_block_clusters: true
+  grdma: true
+  gds: true
+  cp_async: true
+  async_barrier: true              # mbarrier intrinsics
+  bf16: true
+  tf32: true
+  fp8: true                        # Hopper adds FP8 (e4m3, e5m2)
+  distributed_shared_memory: true
+
+tuning:
+  warp_specialization_queues: 4    # data-prefetch / data-evict / compute / fence
+  stream_pool_size: 16
+  l2_residence_controls: true
+  l2_cache_size_mb: 60
+  graph_capture_preferred: true
+  async_copy_strategy: tma
+  tma_tile_shape: [128, 128]       # default 2-D tile
+  tma_swizzle: 128B
+  tma_descriptor_cache_size: 256
+  multicast_enabled: true
+  multicast_cluster_size: 8
+  ilc_enabled: true
+  ilc_compress_allocations_above_kb: 64
+  dsm_cluster_size: 8
+  prefetch_distance_tokens: 4
+  eviction_policy: lru_refcount
+  page_table_initial_slots: 131072
+  fault_buffer_slots: 8192
+
+# Hopper-specific kernel tuning
+kernel_tuning:
+  attention:
+    block_m: 128
+    block_n: 128
+    num_warps: 8
+    stages: 4                      # quad-buffer with TMA
+    use_tma: true
+    use_dsm: true
+    use_multicast: true            # TMA multicast for Q broadcast
+    warp_spec:
+      producer_warps: 2
+      consumer_warps: 14
+      fence_warps: 0
+  mlp:
+    block_m: 128
+    block_n: 128
+    num_warps: 8
+    stages: 4
+    use_tma: true
+    use_ilc: true                  # ILC on weights + activations
+  softmax:
+    block_size: 1024
+    num_warps: 4
+    use_fp8_accumulator: false     # FP8 softmax is unstable
+  layernorm:
+    block_size: 1024
+    num_warps: 4
+    use_rsqrt: true
+    use_dsm: true                  # cluster-wide reduction
+
+# FP8 quantization knobs (Hopper-only)
+fp8:
+  enabled: false                   # opt-in per kernel
+  e4m3_max: 448.0
+  e5m2_max: 57344.0
+  amax_history: 16
+  amax_update_period: 8
+
+# Power / thermal envelope
+power:
+  tdp_watts: 700                   # SXM5
+  sustained_tdp_watts: 630
+  clock_lock_mhz: 1830             # base SM clock
+  memory_lock_mhz: 2619            # HBM3 base clock

@@ -1,0 +1,54 @@
+MIT License
+
+Copyright (c) 2026 Rohan R
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+------------------------------------------------------------------------------
+
+Attributions
+
+NexusRT builds on the following hardware, software, and research artifacts.
+Their authors retain all original rights; this notice acknowledges influence
+and provides a starting point for downstream users.
+
+1. NVIDIA CUDA Driver API, CUDA Runtime, GPUDirect Storage, GPUDirect RDMA,
+   Tensor Memory Accelerator (TMA), Inline Compression (ILC), Thread Block
+   Clusters / Distributed Shared Memory.
+     Copyright (c) NVIDIA Corporation.
+     Licensed under NVIDIA Software License terms where applicable.
+     https://docs.nvidia.com/cuda/
+
+2. Apple Metal Framework, Metal Performance Shaders, MLX.
+     Copyright (c) Apple Inc.
+     https://developer.apple.com/metal/
+
+3. DREAM: Device-Driven Efficient Access to Virtual Memory
+     Agarwal et al., ACM (2025).
+     https://dl.acm.org/doi/10.1145/3721145.3725748
+
+4. KOKARYOKU — Bare-metal GPU platform research.
+     arXiv:2604.13600v1
+
+5. TrainMover: An Interruption-Resilient Runtime for ML Training.
+     arXiv:2412.12636
+
+6. The research paper "Beyond the OS: A Firmware-Centric Runtime for
+   End-to-End Acceleration of LLM Pipelines on NVIDIA GPUs", which
+   motivates this implementation.

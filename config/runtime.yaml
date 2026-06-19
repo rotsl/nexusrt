@@ -1,0 +1,116 @@
+# NexusRT Runtime Tuning
+# ============================================================================
+# Consumed by the firmware-equivalent layer at init time. These knobs control
+# memory pool sizing, GPU-driven page-fault routing, prefetch policies, and
+# the warp-specialization scheduler.
+
+# --- Memory pools ----------------------------------------------------------
+memory:
+  hbm_pool_size_gb: 64               # 80GB H100 → reserve 16GB for system
+  staging_pool_size_mb: 512          # host-side pinned staging buffer
+  gds_pipe_depth: 8                  # outstanding GDS requests
+  grdma_pipe_depth: 16               # outstanding GRDMA requests
+
+  # GPU-driven virtual memory (DREAM-style)
+  page_table:
+    initial_slots: 65536             # page-table entries in HBM
+    grow_factor: 2.0
+    refcount_bits: 16                # per-page reference counter
+    fault_buffer_slots: 4096         # fault records buffered in HBM
+    fault_buffer_poll_us: 5          # poll interval for GPU fault thread
+    eviction_policy: lru_refcount    # lru | lru_refcount | arc
+    eviction_high_watermark_pct: 85  # trigger eviction at 85% HBM occupancy
+    eviction_low_watermark_pct: 65   # stop eviction at 65%
+
+  # Unified-memory coalescer
+  coalescer:
+    enabled: true
+    min_alignment_bytes: 128         # HBM warp-aligned
+    merge_fragments_above_pct: 30    # trigger coalescing if fragmentation > 30%
+    scan_interval_ms: 200
+
+  # ILC (Inline Compression) — H100 only
+  ilc:
+    enabled: true                    # auto-disabled on non-Hopper
+    compress_allocations_above_kb: 64
+
+  # cuMemAdvise hints
+  advise:
+    read_mostly_threshold_refs: 4
+    preferred_location: device       # device | host | numanode
+    accessed_by: [device]            # devices that will access the allocation
+
+# --- Scheduler --------------------------------------------------------------
+scheduler:
+  task_graph_max_nodes: 16384
+  stream_pool:
+    compute_streams: 8               # SM-bound work
+    dma_streams: 4                   # GDS / GRDMA / TMA
+    fence_streams: 2                 # doorbell writers
+    priority_range: [-2, 2]          # CUDA stream priorities
+
+  warp_specialization:
+    producer_warps_per_cta: 2        # TMA / async-copy issuers
+    consumer_warps_per_cta: 14       # compute warps
+    fence_warps_per_cta: 0           # H100 only — mbarrier arrievement
+    pin_warps_to_named_queues: true
+
+  tma:                               # H100 only — ignored on A100
+    descriptor_cache_size: 256
+    swizzle_mode: 128B
+    default_tile: [128, 128]
+    multicast_enabled: true
+    multicast_cluster_size: 8
+
+  gds:
+    batch_threshold_kb: 64           # below this use host-pinned bounce
+    o_direct_enforced: true
+
+  grdma:
+    nccl_fallback: true              # use NCCL collectives if IBV unavailable
+    ibv_device_allowlist: ["mlx5_*", "roce*"]
+
+  # Stage contract enforcement
+  stage_contracts:
+    enforce_token_budget: true
+    enforce_sm_footprint: true
+    enforce_memory_footprint: true
+    reject_on_violation: false       # log & demote priority instead
+    log_violation_metric: nexusrt.stage.contract_violation
+
+# --- Token optimization -----------------------------------------------------
+token_opt:
+  icm_layers:                        # ICM-inspired layered context model
+    L0_system:        { max_tokens: 256,   residency: pinned }
+    L1_persona:       { max_tokens: 512,   residency: pinned }
+    L2_instructions:  { max_tokens: 1024,  residency: hbm }
+    L3_reference:     { max_tokens: 8192,  residency: hbm_paged }
+    L4_working:       { max_tokens: 4096,  residency: hbm_working }
+
+  prefetch:
+    attention_topk: 32               # how many KV slots to prefetch per step
+    history_window_steps: 16         # past attention rows to use as predictor
+    score_threshold: 0.05            # discard slots below this normalized weight
+    prefetch_distance_tokens: 4      # look-ahead in autoregressive decoding
+
+  kv_cache:
+    pruning_strategy: attention_weighted_lru
+    max_resident_tokens: 32768
+    eviction_band: 2                 # evict in bands of 2 tokens to amortize TLB cost
+    quantization: int8               # fp16 | int8 | int4
+    page_size_tokens: 16             # PagedAttention-style token pages
+
+  budget_enforcement:
+    per_stage_window_tokens: 8192    # hard cap; stages refuse to load more
+    overflow_action: spill_to_l3     # spill_to_l3 | drop_l4 | error
+    spill_metric: nexusrt.token.spill
+
+# --- Diagnostics ------------------------------------------------------------
+diagnostics:
+  metrics_export_interval_ms: 1000
+  prometheus_endpoint: "127.0.0.1:9100"
+  trace_event_buffer: 65536
+  leak_audit:
+    enabled: true
+    scan_interval_s: 30
+    fail_on_leak: false              # log only by default

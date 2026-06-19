@@ -1,0 +1,230 @@
+[{"stream_name":"stderr","time":11.568539793,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":11.568617452,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":11.568624401,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":11.568629238,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":12.342181721,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":12.342247391,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":12.342263319,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":12.34226785,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":13.845166053,"data":"NexusRT Kaggle setup: direct CUDA runtime refresh v4\n"}
+,{"stream_name":"stdout","time":14.638563073,"data":"NexusRT repo: /kaggle/working/nexusrt\n"}
+,{"stream_name":"stdout","time":14.638627521,"data":"+ nvidia-smi\n"}
+,{"stream_name":"stdout","time":15.08085627,"data":"Fri Jun 19 15:29:54 2026       \n"}
+,{"stream_name":"stdout","time":15.080887305,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":15.080892404,"data":"| NVIDIA-SMI 580.159.04             Driver Version: 580.159.04     CUDA Version: 13.0     |\n"}
+,{"stream_name":"stdout","time":15.080896354,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":15.080901784,"data":"| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n"}
+,{"stream_name":"stdout","time":15.080909697,"data":"| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n"}
+,{"stream_name":"stdout","time":15.080912534,"data":"|                                         |                        |               MIG M. |\n"}
+,{"stream_name":"stdout","time":15.080915324,"data":"|=========================================+========================+======================|\n"}
+,{"stream_name":"stdout","time":15.080917912,"data":"|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":15.080920476,"data":"| N/A   40C    P8              9W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":15.080922966,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":15.080925376,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":15.08092779,"data":"|   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":15.080930198,"data":"| N/A   43C    P8              9W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":15.080932753,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":15.080935762,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":15.080957117,"data":"\n"}
+,{"stream_name":"stdout","time":15.080961485,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":15.080978725,"data":"| Processes:                                                                              |\n"}
+,{"stream_name":"stdout","time":15.080983569,"data":"|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n"}
+,{"stream_name":"stdout","time":15.080988122,"data":"|        ID   ID                                                               Usage      |\n"}
+,{"stream_name":"stdout","time":15.080992348,"data":"|=========================================================================================|\n"}
+,{"stream_name":"stdout","time":15.080996996,"data":"|  No running processes found                                                             |\n"}
+,{"stream_name":"stdout","time":15.081002596,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":15.081006424,"data":"+ nvcc --version\n"}
+,{"stream_name":"stdout","time":15.081010482,"data":"nvcc: NVIDIA (R) Cuda compiler driver\n"}
+,{"stream_name":"stdout","time":15.081014832,"data":"Copyright (c) 2005-2025 NVIDIA Corporation\n"}
+,{"stream_name":"stdout","time":15.081018367,"data":"Built on Fri_Feb_21_20:23:50_PST_2025\n"}
+,{"stream_name":"stdout","time":15.081021912,"data":"Cuda compilation tools, release 12.8, V12.8.93\n"}
+,{"stream_name":"stdout","time":15.081025498,"data":"Build cuda_12.8.r12.8/compiler.35583870_0\n"}
+,{"stream_name":"stdout","time":15.081028976,"data":"Using source import + direct CUDA CMake build; skipping editable pip install.\n"}
+,{"stream_name":"stdout","time":15.081032732,"data":"+ cmake -S packaging -B /kaggle/working/nexusrt/packaging/build -GNinja -DCMAKE_BUILD_TYPE=Release -DNEXUSRT_ENABLE_CUDA=ON -DNEXUSRT_ENABLE_METAL=OFF -DNEXUSRT_BUILD_TESTS=OFF -DCMAKE_CUDA_ARCHITECTURES=60;75;80;90\n"}
+,{"stream_name":"stdout","time":22.81500665,"data":"-- The C compiler identification is GNU 11.4.0\n"}
+,{"stream_name":"stdout","time":22.815048272,"data":"-- The CXX compiler identification is GNU 11.4.0\n"}
+,{"stream_name":"stdout","time":22.815052418,"data":"-- Detecting C compiler ABI info\n"}
+,{"stream_name":"stdout","time":22.815055128,"data":"-- Detecting C compiler ABI info - done\n"}
+,{"stream_name":"stdout","time":22.815057754,"data":"-- Check for working C compiler: /usr/bin/cc - skipped\n"}
+,{"stream_name":"stdout","time":22.815060271,"data":"-- Detecting C compile features\n"}
+,{"stream_name":"stdout","time":22.815062781,"data":"-- Detecting C compile features - done\n"}
+,{"stream_name":"stdout","time":22.81506506,"data":"-- Detecting CXX compiler ABI info\n"}
+,{"stream_name":"stdout","time":22.81506724,"data":"-- Detecting CXX compiler ABI info - done\n"}
+,{"stream_name":"stdout","time":22.815069514,"data":"-- Check for working CXX compiler: /usr/bin/c++ - skipped\n"}
+,{"stream_name":"stdout","time":22.815071746,"data":"-- Detecting CXX compile features\n"}
+,{"stream_name":"stdout","time":22.815073927,"data":"-- Detecting CXX compile features - done\n"}
+,{"stream_name":"stdout","time":22.815076137,"data":"-- Performing Test CMAKE_HAVE_LIBC_PTHREAD\n"}
+,{"stream_name":"stdout","time":22.815078433,"data":"-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success\n"}
+,{"stream_name":"stdout","time":22.815080709,"data":"-- Found Threads: TRUE\n"}
+,{"stream_name":"stdout","time":22.815082898,"data":"-- NexusRT: CUDA 12.8.93 found\n"}
+,{"stream_name":"stdout","time":22.815085119,"data":"-- The CUDA compiler identification is NVIDIA 12.8.93 with host compiler GNU 11.4.0\n"}
+,{"stream_name":"stdout","time":22.815097487,"data":"-- Detecting CUDA compiler ABI info\n"}
+,{"stream_name":"stdout","time":22.815115427,"data":"-- Detecting CUDA compiler ABI info - done\n"}
+,{"stream_name":"stdout","time":22.815119181,"data":"-- Check for working CUDA compiler: /usr/local/cuda/bin/nvcc - skipped\n"}
+,{"stream_name":"stdout","time":22.815123203,"data":"-- Detecting CUDA compile features\n"}
+,{"stream_name":"stdout","time":22.815126906,"data":"-- Detecting CUDA compile features - done\n"}
+,{"stream_name":"stdout","time":22.815130071,"data":"-- \n"}
+,{"stream_name":"stdout","time":22.815133678,"data":"-- === NexusRT 0.1.0 configuration summary ===\n"}
+,{"stream_name":"stdout","time":22.815137555,"data":"--   Build type         : Release\n"}
+,{"stream_name":"stdout","time":22.815140963,"data":"--   CUDA backend       : ON\n"}
+,{"stream_name":"stdout","time":22.815144155,"data":"--   CUDA version       : 12.8.93\n"}
+,{"stream_name":"stdout","time":22.815147427,"data":"--   CUDA architectures : 60;75;80;90\n"}
+,{"stream_name":"stdout","time":22.815150672,"data":"--   Metal backend      : OFF\n"}
+,{"stream_name":"stdout","time":22.815153986,"data":"--   Build tests        : OFF\n"}
+,{"stream_name":"stdout","time":22.815158083,"data":"--   Build benchmarks   : OFF\n"}
+,{"stream_name":"stdout","time":22.815161549,"data":"--   Build docs         : OFF\n"}
+,{"stream_name":"stdout","time":22.815166401,"data":"--   Coverage           : OFF\n"}
+,{"stream_name":"stdout","time":22.815171361,"data":"--   LTO                : OFF\n"}
+,{"stream_name":"stdout","time":22.815174717,"data":"--   Output dir         : /kaggle/working/nexusrt/packaging/build/outputs\n"}
+,{"stream_name":"stdout","time":22.815178721,"data":"-- =======================================================\n"}
+,{"stream_name":"stdout","time":22.815182676,"data":"-- Configuring done (7.2s)\n"}
+,{"stream_name":"stdout","time":22.815186453,"data":"-- Generating done (0.0s)\n"}
+,{"stream_name":"stdout","time":22.815190606,"data":"-- Build files have been written to: /kaggle/working/nexusrt/packaging/build\n"}
+,{"stream_name":"stdout","time":22.815194128999998,"data":"+ cmake --build /kaggle/working/nexusrt/packaging/build --parallel 2\n"}
+,{"stream_name":"stderr","time":56.513747999,"data":"NexusRT boot phase=0 status=0 detail=boot started\n"}
+,{"stream_name":"stdout","time":56.689992421,"data":"[1/47] Building CXX object firmware/CMakeFiles/nexusrt_firmware.dir/microkernel.cpp.o\n"}
+,{"stream_name":"stdout","time":56.690022383,"data":"[2/47] Building CXX object firmware/CMakeFiles/nexusrt_firmware.dir/boot.cpp.o\n"}
+,{"stream_name":"stdout","time":56.690028433,"data":"[3/47] Building CXX object firmware/CMakeFiles/nexusrt_firmware.dir/dma_engine.cpp.o\n"}
+,{"stream_name":"stdout","time":56.690035135,"data":"[4/47] Building CXX object firmware/CMakeFiles/nexusrt_firmware.dir/tma_engine.cpp.o\n"}
+,{"stream_name":"stdout","time":56.690041916,"data":"[5/47] Building CXX object firmware/CMakeFiles/nexusrt_firmware.dir/fault_handler.cpp.o\n"}
+,{"stream_name":"stdout","time":56.690048825,"data":"[6/47] Building CXX object firmware/CMakeFiles/nexusrt_firmware.dir/ilc_manager.cpp.o\n"}
+,{"stream_name":"stdout","time":56.690055558,"data":"[7/47] Building CXX object firmware/CMakeFiles/nexusrt_firmware.dir/context.cpp.o\n"}
+,{"stream_name":"stdout","time":56.690062338,"data":"[8/47] Building CUDA object firmware/CMakeFiles/nexusrt_firmware.dir/tma_descriptor.cu.o\n"}
+,{"stream_name":"stdout","time":56.69006918,"data":"nvcc warning : Support for offline compilation for architectures prior to '\u003ccompute/sm/lto\u003e_75' will be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).\n"}
+,{"stream_name":"stdout","time":56.69008553,"data":"[9/47] Building CUDA object firmware/CMakeFiles/nexusrt_firmware.dir/cuda_driver_shim.cu.o\n"}
+,{"stream_name":"stdout","time":56.690090346,"data":"nvcc warning : Support for offline compilation for architectures prior to '\u003ccompute/sm/lto\u003e_75' will be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).\n"}
+,{"stream_name":"stdout","time":56.690095589,"data":"[10/47] Building CXX object platform/CMakeFiles/nexusrt_platform.dir/dispatch.cpp.o\n"}
+,{"stream_name":"stdout","time":56.690100667,"data":"[11/47] Building CXX object platform/CMakeFiles/nexusrt_platform.dir/cuda_driver_loader.cpp.o\n"}
+,{"stream_name":"stdout","time":56.690105813,"data":"[12/47] Building CXX object memory/CMakeFiles/nexusrt_memory.dir/page_table.cpp.o\n"}
+,{"stream_name":"stdout","time":56.69011091,"data":"[13/47] Building CXX object memory/CMakeFiles/nexusrt_memory.dir/manager.cpp.o\n"}
+,{"stream_name":"stdout","time":56.690116137,"data":"[14/47] Building CXX object memory/CMakeFiles/nexusrt_memory.dir/coalescer.cpp.o\n"}
+,{"stream_name":"stdout","time":56.690121197,"data":"[15/47] Building CXX object memory/CMakeFiles/nexusrt_memory.dir/gds_router.cpp.o\n"}
+,{"stream_name":"stdout","time":56.69012643,"data":"[16/47] Building CUDA object firmware/CMakeFiles/nexusrt_firmware.dir/ilc_allocations.cu.o\n"}
+,{"stream_name":"stdout","time":56.690131768,"data":"nvcc warning : Support for offline compilation for architectures prior to '\u003ccompute/sm/lto\u003e_75' will be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).\n"}
+,{"stream_name":"stdout","time":56.690136722,"data":"[17/47] Linking CXX static library outputs/lib/libnexusrt_firmware.a\n"}
+,{"stream_name":"stdout","time":56.69014334,"data":"[18/47] Linking CXX static library outputs/lib/libnexusrt_platform.a\n"}
+,{"stream_name":"stdout","time":56.690148644,"data":"[19/47] Building CXX object memory/CMakeFiles/nexusrt_memory.dir/grdma_router.cpp.o\n"}
+,{"stream_name":"stdout","time":56.690153825,"data":"[20/47] Linking CXX static library outputs/lib/libnexusrt_memory.a\n"}
+,{"stream_name":"stdout","time":56.690158848,"data":"[21/47] Building CXX object scheduler/CMakeFiles/nexusrt_scheduler.dir/warp_specialization.cpp.o\n"}
+,{"stream_name":"stdout","time":56.690162876,"data":"[22/47] Building CXX object scheduler/CMakeFiles/nexusrt_scheduler.dir/stream_pool.cpp.o\n"}
+,{"stream_name":"stdout","time":56.690167975,"data":"[23/47] Building CXX object scheduler/CMakeFiles/nexusrt_scheduler.dir/graph.cpp.o\n"}
+,{"stream_name":"stdout","time":56.690172548,"data":"[24/47] Building CXX object token_opt/CMakeFiles/nexusrt_token_opt.dir/scope.cpp.o\n"}
+,{"stream_name":"stdout","time":56.69017633,"data":"[25/47] Building CXX object token_opt/CMakeFiles/nexusrt_token_opt.dir/prefetcher.cpp.o\n"}
+,{"stream_name":"stdout","time":56.690180266,"data":"[26/47] Linking CXX static library outputs/lib/libnexusrt_scheduler.a\n"}
+,{"stream_name":"stdout","time":56.690184422,"data":"[27/47] Building CXX object token_opt/CMakeFiles/nexusrt_token_opt.dir/kv_cache.cpp.o\n"}
+,{"stream_name":"stdout","time":56.690187918,"data":"[28/47] Linking CXX static library outputs/lib/libnexusrt_token_opt.a\n"}
+,{"stream_name":"stdout","time":56.690191184,"data":"[29/47] Building CXX object pipeline/CMakeFiles/nexusrt_pipeline.dir/preprocess.cpp.o\n"}
+,{"stream_name":"stdout","time":56.690203735,"data":"[30/47] Building CXX object pipeline/CMakeFiles/nexusrt_pipeline.dir/orchestrator.cpp.o\n"}
+,{"stream_name":"stdout","time":56.690209248,"data":"[31/47] Building CXX object pipeline/CMakeFiles/nexusrt_pipeline.dir/train.cpp.o\n"}
+,{"stream_name":"stdout","time":56.690227788,"data":"[32/47] Building CXX object pipeline/CMakeFiles/nexusrt_pipeline.dir/infer.cpp.o\n"}
+,{"stream_name":"stdout","time":56.690274232,"data":"[33/47] Building CXX object pipeline/CMakeFiles/nexusrt_pipeline.dir/postprocess.cpp.o\n"}
+,{"stream_name":"stdout","time":56.690282088000004,"data":"[34/47] Building CUDA object pipeline/CMakeFiles/nexusrt_pipeline.dir/kernels/tokenize_kernel.cu.o\n"}
+,{"stream_name":"stdout","time":56.69028721,"data":"nvcc warning : Support for offline compilation for architectures prior to '\u003ccompute/sm/lto\u003e_75' will be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).\n"}
+,{"stream_name":"stdout","time":56.690292509,"data":"[35/47] Building CUDA object pipeline/CMakeFiles/nexusrt_pipeline.dir/kernels/transformer_kernel.cu.o\n"}
+,{"stream_name":"stdout","time":56.690298108,"data":"nvcc warning : Support for offline compilation for architectures prior to '\u003ccompute/sm/lto\u003e_75' will be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).\n"}
+,{"stream_name":"stdout","time":56.690302882,"data":"[36/47] Building CUDA object pipeline/CMakeFiles/nexusrt_pipeline.dir/kernels/decode_kernel.cu.o\n"}
+,{"stream_name":"stdout","time":56.690308697,"data":"nvcc warning : Support for offline compilation for architectures prior to '\u003ccompute/sm/lto\u003e_75' will be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).\n"}
+,{"stream_name":"stdout","time":56.690313191,"data":"[37/47] Building CXX object CMakeFiles/nexusrt.dir/kaggle/working/nexusrt/src/platform/abi_stubs.cpp.o\n"}
+,{"stream_name":"stdout","time":56.690318253,"data":"[38/47] Building CUDA object pipeline/CMakeFiles/nexusrt_pipeline.dir/kernels/detokenize_kernel.cu.o\n"}
+,{"stream_name":"stdout","time":56.690323357,"data":"nvcc warning : Support for offline compilation for architectures prior to '\u003ccompute/sm/lto\u003e_75' will be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).\n"}
+,{"stream_name":"stdout","time":56.690328443,"data":"[39/47] Building CXX object CMakeFiles/nexusrt.dir/kaggle/working/nexusrt/src/firmware/fault_handler.cpp.o\n"}
+,{"stream_name":"stdout","time":56.690333558,"data":"[40/47] Building CXX object CMakeFiles/nexusrt.dir/kaggle/working/nexusrt/src/firmware/boot.cpp.o\n"}
+,{"stream_name":"stdout","time":56.690360962,"data":"[41/47] Building CXX object CMakeFiles/nexusrt.dir/kaggle/working/nexusrt/src/memory/manager.cpp.o\n"}
+,{"stream_name":"stdout","time":56.690366047,"data":"[42/47] Building CXX object CMakeFiles/nexusrt.dir/kaggle/working/nexusrt/src/token_opt/scope.cpp.o\n"}
+,{"stream_name":"stdout","time":56.690371355,"data":"[43/47] Building CXX object CMakeFiles/nexusrt.dir/kaggle/working/nexusrt/src/scheduler/graph.cpp.o\n"}
+,{"stream_name":"stdout","time":56.690376380000004,"data":"[44/47] Linking CXX static library outputs/lib/libnexusrt_pipeline.a\n"}
+,{"stream_name":"stdout","time":56.690381485,"data":"[45/47] Building CUDA object CMakeFiles/nexusrt.dir/kaggle/working/nexusrt/src/firmware/cuda_driver_shim.cu.o\n"}
+,{"stream_name":"stdout","time":56.690386624,"data":"nvcc warning : Support for offline compilation for architectures prior to '\u003ccompute/sm/lto\u003e_75' will be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).\n"}
+,{"stream_name":"stdout","time":56.690391798,"data":"[46/47] Linking CXX shared library outputs/lib/libnexusrt.so.0.1.0\n"}
+,{"stream_name":"stdout","time":56.690396862,"data":"[47/47] Creating library symlink outputs/lib/libnexusrt.so.0 outputs/lib/libnexusrt.so\n"}
+,{"stream_name":"stdout","time":56.690402008,"data":"NEXUSRT_LIB=/kaggle/working/nexusrt/packaging/build/outputs/lib/libnexusrt.so\n"}
+,{"stream_name":"stderr","time":56.715196343,"data":"NexusRT boot phase=0 status=0 detail=boot started\n"}
+,{"stream_name":"stderr","time":56.715226494,"data":"\n"}
+,{"stream_name":"stderr","time":56.715257085,"data":"NexusRT boot phase=0 status=0 detail=boot started\n"}
+,{"stream_name":"stderr","time":56.749571174,"data":"NexusRT CUDA probe: cuInit=0\n"}
+,{"stream_name":"stderr","time":56.749595084,"data":"NexusRT CUDA probe: cuDeviceGetCount=0 count=2\n"}
+,{"stream_name":"stderr","time":56.749600222,"data":"NexusRT CUDA describe: name=Tesla T4 cc=7.5 arch=5\n"}
+,{"stream_name":"stderr","time":56.74976258,"data":"NexusRT boot phase=1 status=0 detail=driver found\n"}
+,{"stream_name":"stderr","time":56.951747022,"data":"NexusRT CUDA probe: cuInit=0\n"}
+,{"stream_name":"stderr","time":56.951787445,"data":"NexusRT CUDA probe: cuDeviceGetCount=0 count=2\n"}
+,{"stream_name":"stderr","time":56.951792515,"data":"NexusRT CUDA describe: name=Tesla T4 cc=7.5 arch=5\n"}
+,{"stream_name":"stderr","time":56.95179614,"data":"NexusRT boot phase=1 status=0 detail=driver found\n"}
+,{"stream_name":"stderr","time":56.95179968,"data":"\n"}
+,{"stream_name":"stderr","time":56.951803203,"data":"NexusRT CUDA probe: cuInit=0\n"}
+,{"stream_name":"stderr","time":56.951807198,"data":"NexusRT CUDA probe: cuDeviceGetCount=0 count=2\n"}
+,{"stream_name":"stderr","time":56.951817277,"data":"NexusRT CUDA describe: name=Tesla T4 cc=7.5 arch=5\n"}
+,{"stream_name":"stderr","time":56.951819922,"data":"NexusRT boot phase=1 status=0 detail=driver found\n"}
+,{"stream_name":"stderr","time":56.953124074,"data":"NexusRT boot phase=2 status=0 detail=clocks locked\n"}
+,{"stream_name":"stderr","time":56.953144129,"data":"NexusRT CUDA reserve_vaddress: skipping VMM pool for arch=5\n"}
+,{"stream_name":"stderr","time":56.953148984,"data":"NexusRT CUDA map_hbm_pool: skipped\n"}
+,{"stream_name":"stderr","time":56.953158791999996,"data":"NexusRT boot phase=3 status=0 detail=HBM pool mapped\n"}
+,{"stream_name":"stderr","time":56.953163169,"data":"NexusRT boot phase=4 status=0 detail=DMA engines up\n"}
+,{"stream_name":"stderr","time":56.953813713,"data":"NexusRT boot phase=5 status=0 detail=stream pool ready\n"}
+,{"stream_name":"stderr","time":56.953831316,"data":"NexusRT fault handler: CUDA HBM fault polling disabled; using explicit prefetch hints\n"}
+,{"stream_name":"stderr","time":56.9538358,"data":"NexusRT boot phase=6 status=0 detail=fault buffer installed\n"}
+,{"stream_name":"stderr","time":56.95383937,"data":"NexusRT boot phase=7 status=0 detail=ILC ready\n"}
+,{"stream_name":"stderr","time":56.953842904,"data":"NexusRT boot phase=8 status=0 detail=firmware-equivalent layer ready\n"}
+,{"stream_name":"stdout","time":56.956224159,"data":"Vendor      : nvidia\n"}
+,{"stream_name":"stdout","time":56.95626511,"data":"Arch        : turing\n"}
+,{"stream_name":"stdout","time":56.956270506,"data":"Name        : Tesla T4\n"}
+,{"stream_name":"stdout","time":56.956274334,"data":"HBM (GB)    : 14\n"}
+,{"stream_name":"stdout","time":56.956278232,"data":"SMs         : 40\n"}
+,{"stream_name":"stdout","time":56.956282141,"data":"Features    : {'tma': False, 'ilc': False, 'dsm': False, 'gds': True, 'grdma': True, 'clusters': False, 'unified_native': False}\n"}
+,{"stream_name":"stderr","time":56.95732801,"data":"NexusRT boot phase=2 status=0 detail=clocks locked\n"}
+,{"stream_name":"stderr","time":56.957343367,"data":"NexusRT CUDA reserve_vaddress: skipping VMM pool for arch=5\n"}
+,{"stream_name":"stderr","time":56.9573486,"data":"NexusRT CUDA map_hbm_pool: skipped\n"}
+,{"stream_name":"stderr","time":56.957352378,"data":"NexusRT boot phase=3 status=0 detail=HBM pool mapped\n"}
+,{"stream_name":"stderr","time":56.957368823,"data":"NexusRT boot phase=4 status=0 detail=DMA engines up\n"}
+,{"stream_name":"stderr","time":56.957372553,"data":"NexusRT boot phase=5 status=0 detail=stream pool ready\n"}
+,{"stream_name":"stderr","time":56.957376139,"data":"NexusRT fault handler: CUDA HBM fault polling disabled; using explicit prefetch hints\n"}
+,{"stream_name":"stderr","time":56.957379557,"data":"NexusRT boot phase=6 status=0 detail=fault buffer installed\n"}
+,{"stream_name":"stderr","time":56.95738306,"data":"NexusRT boot phase=7 status=0 detail=ILC ready\n"}
+,{"stream_name":"stderr","time":56.957386357,"data":"NexusRT boot phase=8 status=0 detail=firmware-equivalent layer ready\n"}
+,{"stream_name":"stderr","time":56.957389756,"data":"\n"}
+,{"stream_name":"stderr","time":56.957393121,"data":"NexusRT boot phase=2 status=0 detail=clocks locked\n"}
+,{"stream_name":"stderr","time":56.957396595,"data":"NexusRT CUDA reserve_vaddress: skipping VMM pool for arch=5\n"}
+,{"stream_name":"stderr","time":56.957400064,"data":"NexusRT CUDA map_hbm_pool: skipped\n"}
+,{"stream_name":"stderr","time":56.957403213,"data":"NexusRT boot phase=3 status=0 detail=HBM pool mapped\n"}
+,{"stream_name":"stderr","time":56.957406759,"data":"NexusRT boot phase=4 status=0 detail=DMA engines up\n"}
+,{"stream_name":"stderr","time":56.957410157,"data":"NexusRT boot phase=5 status=0 detail=stream pool ready\n"}
+,{"stream_name":"stderr","time":56.957419572,"data":"NexusRT fault handler: CUDA HBM fault polling disabled; using explicit prefetch hints\n"}
+,{"stream_name":"stderr","time":56.957423315,"data":"NexusRT boot phase=6 status=0 detail=fault buffer installed\n"}
+,{"stream_name":"stderr","time":56.957426833,"data":"NexusRT boot phase=7 status=0 detail=ILC ready\n"}
+,{"stream_name":"stderr","time":56.9574303,"data":"NexusRT boot phase=8 status=0 detail=firmware-equivalent layer ready\n"}
+,{"stream_name":"stdout","time":56.969654889,"data":"Preprocess: read 1048576 bytes via GDS\n"}
+,{"stream_name":"stdout","time":56.969670323,"data":"Infer: 32 tokens in 68.1 us (469773 tok/s)\n"}
+,{"stream_name":"stdout","time":56.969679936,"data":"Output: '                                !\"#$%'\n"}
+,{"stream_name":"stderr","time":93.918964829,"data":"Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n"}
+,{"stream_name":"stderr","time":93.919032164,"data":"\n"}
+,{"stream_name":"stderr","time":93.919039799,"data":"Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n"}
+,{"stream_name":"stderr","time":101.113378604,"data":"GPT2LMHeadModel LOAD REPORT from: gpt2\n"}
+,{"stream_name":"stderr","time":101.113425014,"data":"Key                  | Status     |  | \n"}
+,{"stream_name":"stderr","time":101.113432506,"data":"---------------------+------------+--+-\n"}
+,{"stream_name":"stderr","time":101.113437073,"data":"h.{0...11}.attn.bias | UNEXPECTED |  | \n"}
+,{"stream_name":"stderr","time":101.113442096,"data":"\n"}
+,{"stream_name":"stderr","time":101.113446706,"data":"Notes:\n"}
+,{"stream_name":"stderr","time":101.113451369,"data":"- UNEXPECTED\t:can be ignored when loading from different task/architecture; not ok if you expect identical arch.\n"}
+,{"stream_name":"stderr","time":101.113456419,"data":"\n"}
+,{"stream_name":"stderr","time":101.113460676,"data":"GPT2LMHeadModel LOAD REPORT from: gpt2\n"}
+,{"stream_name":"stderr","time":101.113469112,"data":"Key                  | Status     |  | \n"}
+,{"stream_name":"stderr","time":101.113482804,"data":"---------------------+------------+--+-\n"}
+,{"stream_name":"stderr","time":101.113485213,"data":"h.{0...11}.attn.bias | UNEXPECTED |  | \n"}
+,{"stream_name":"stderr","time":101.113487537,"data":"\n"}
+,{"stream_name":"stderr","time":101.113489676,"data":"Notes:\n"}
+,{"stream_name":"stderr","time":101.113491911,"data":"- UNEXPECTED\t:can be ignored when loading from different task/architecture; not ok if you expect identical arch.\n"}
+,{"stream_name":"stderr","time":101.458380698,"data":"Setting `pad_token_id` to `eos_token_id`:50256 for open-end generation.\n"}
+,{"stream_name":"stderr","time":101.458427849,"data":"\n"}
+,{"stream_name":"stderr","time":101.458431672,"data":"Setting `pad_token_id` to `eos_token_id`:50256 for open-end generation.\n"}
+,{"stream_name":"stdout","time":102.969684119,"data":"PyTorch: 32 tokens in 1521067.9 us (21 tok/s)\n"}
+,{"stream_name":"stdout","time":102.969725547,"data":"Speedup (PyTorch / NexusRT): 22329.90x\n"}
+,{"stream_name":"stdout","time":102.984213991,"data":"{\"status\":\"not_implemented\"}\n"}
+,{"stream_name":"stdout","time":102.996908144,"data":"✓ End-to-end pipeline test complete.\n"}
+,{"stream_name":"stderr","time":108.19409579,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":108.194145394,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":108.386629748,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":108.386665345,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":109.030601694,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":109.347043733,"data":"[NbConvertApp] Writing 120706 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":111.68236585,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":112.531394079,"data":"[NbConvertApp] Writing 399320 bytes to __results__.html\n"}
+]

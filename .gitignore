@@ -1,0 +1,99 @@
+# Build artifacts
+packaging/build/
+_build/
+cmake-build-*/
+compile_commands.json
+CMakeUserPresets.json
+CMakePresetsUser.json
+*.o
+*.obj
+*.so
+*.dylib
+*.dll
+*.a
+*.lib
+*.exp
+*.pdb
+*.ilk
+
+# CUDA
+*.cubin
+*.ptx
+*.fatbin
+*.gpu
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+*.egg
+.eggs/
+build/
+dist/
+develop-eggs/
+.installed.cfg
+MANIFEST
+.mypy_cache/
+.ruff_cache/
+.tox/
+.nox/
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+CTestTestfile.cmake
+Testing/
+!packaging/CMakeLists.txt
+*.cmake
+!packaging/**/*.cmake
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Kaggle
+/kaggle/
+/.kaggle/
+kernel-metadata.json
+dataset-metadata.json
+
+# Virtualenvs
+venv/
+.venv/
+env/
+ENV/
+nexusenv/
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Model artifacts
+*.pt
+*.safetensors
+*.bin
+*.gguf
+*.onnx
+
+# Logs / coverage
+*.log
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+gcov/
+*.gcno
+*.gcda
+*.gcov
+
+# Local config overrides
+config/local_*.yaml
+.env
+.env.local

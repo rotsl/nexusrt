@@ -1,0 +1,122 @@
+# =============================================================================
+# NexusRT — pyproject.toml
+# Python 3.10+, CMake build extension, wheel targets, CLI entry points.
+# =============================================================================
+[build-system]
+requires = ["setuptools>=64", "wheel", "scikit-build-core>=0.7"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "nexusrt"
+version = "0.1.0"
+description = "Firmware-centric, OS-bypass runtime for end-to-end LLM pipelines"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "NexusRT Contributors" }]
+requires-python = ">=3.10"
+keywords = ["llm", "cuda", "metal", "os-bypass", "firmware", "runtime",
+            "h100", "a100", "m1-pro", "hopper", "ampere"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS :: MacOS X",
+    "Programming Language :: C++",
+    "Programming Language :: CUDA",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: System :: Hardware",
+]
+dependencies = [
+    "pyyaml>=6.0",
+    "typing-extensions>=4.0; python_version<'3.11'",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "nbval>=0.10",
+    "nbformat>=5.0",
+    "pre-commit>=3.0",
+    "cmake>=3.24",
+    "ninja>=1.11",
+]
+metal = [
+    "mlx>=0.0.6; sys_platform=='darwin'",
+]
+docs = [
+    "sphinx>=7.0",
+    "sphinx-rtd-theme>=2.0",
+    "myst-parser>=2.0",
+]
+
+[project.scripts]
+nexusrt-run = "nexusrt.cli_run:main"
+nexusrt-bench = "nexusrt.cli_bench:main"
+
+[project.urls]
+Homepage = "https://github.com/rotsl/nexusrt"
+Repository = "https://github.com/rotsl/nexusrt"
+Documentation = "https://nexusrt.readthedocs.io"
+Issues = "https://github.com/rotsl/nexusrt/issues"
+
+# ---- scikit-build-core configuration ---------------------------------------
+[tool.scikit-build]
+cmake.minimum-version = "3.24"
+cmake.args = [
+    "-GNinja",
+    "-DCMAKE_BUILD_TYPE=Release",
+    "-DNEXUSRT_BUILD_TESTS=OFF",
+]
+cmake.define = { NEXUSRT_ENABLE_CUDA = "AUTO", NEXUSRT_ENABLE_METAL = "AUTO" }
+ninja.make-fallback = true
+build-dir = "build/{wheel_tag}"
+wheel.packages = ["../python/nexusrt"]
+wheel.py-api = "py3"
+sdist.include = [
+    "src/",
+    "python/",
+    "config/",
+    "include/",
+    "packaging/CMakeLists.txt",
+    "README.md",
+    "LICENSE",
+]
+
+# ---- pytest / coverage -----------------------------------------------------
+[tool.pytest.ini_options]
+testpaths = ["tests/unit"]
+addopts = "-ra --strict-markers"
+markers = [
+    "slow: marks tests as slow",
+    "gpu: requires a GPU",
+    "apple: requires Apple Silicon",
+    "nvidia: requires an NVIDIA GPU",
+]
+
+[tool.coverage.run]
+source = ["nexusrt"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 85
+exclude_lines = [
+    "pragma: no cover",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "GTEST_SKIP",
+]
+
+# ---- cibuildwheel (for producing platform wheels) -------------------------
+[tool.cibuildwheel]
+build = "cp310-* cp311-* cp312-*"
+skip = "*-musllinux_*"
+test-extras = "dev"
+test-command = "pytest {project}/tests/unit -m 'not gpu'"

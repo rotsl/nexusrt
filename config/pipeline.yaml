@@ -1,0 +1,151 @@
+# NexusRT Pipeline Contract Catalog
+# ============================================================================
+# Each entry is a stage contract. The scheduler reads these to determine
+# dependencies, memory footprint, token budget, and the ICM context routing
+# rules per stage. Optional human-in-the-loop review gates (ICM-inspired)
+# are declared under `review_gates`.
+
+# ---------------------------------------------------------------------------
+# Default stage contracts — every pipeline must declare these four phases.
+# ---------------------------------------------------------------------------
+stages:
+
+  # --- Preprocess -----------------------------------------------------------
+  preprocess:
+    description: "Stream raw text from NVMe→HBM via GDS; tokenize on GPU."
+    inputs:
+      - { name: raw_corpus, source: gds_nvme, dtype: uint8, layout: raw }
+    outputs:
+      - { name: token_batch, dtype: int32, layout: packed }
+      - { name: attention_mask, dtype: int8, layout: packed }
+    memory_footprint_mb: 256
+    sm_footprint_mb: 32
+    token_budget: 8192                # tokens per minibatch
+    context_routing:
+      icm_layer: L0_system            # tokenizer config only
+    kernel:
+      bundle: nexusrt.kernels.tokenize
+      entrypoint: tokenize_bpe_u8
+    contract_enforced:
+      - memory_footprint
+      - sm_footprint
+      - token_budget
+
+  # --- Train ----------------------------------------------------------------
+  train:
+    description: "Forward/backward pass with NCCL/GRDMA gradient sync."
+    inputs:
+      - { name: token_batch,   from: preprocess }
+      - { name: model_weights, source: gds_nvme, dtype: bf16, layout: row_major }
+    outputs:
+      - { name: grad_weights, dtype: bf16, layout: row_major }
+      - { name: loss,         dtype: fp32 }
+    memory_footprint_mb: 32768         # weights + activations + grads
+    sm_footprint_mb: 128
+    token_budget: 8192
+    context_routing:
+      icm_layer: L3_reference
+      prefetch_layers: [embeddings, attention, mlp]
+    kernel:
+      bundle: nexusrt.kernels.train
+      entrypoint: transformer_fwd_bwd
+    collective:
+      type: nccl_allreduce
+      grdma_preferred: true
+    contract_enforced:
+      - memory_footprint
+      - sm_footprint
+      - token_budget
+      - collective
+
+  # --- Inference ------------------------------------------------------------
+  infer:
+    description: "Autoregressive decoding with KV-cache residency management."
+    inputs:
+      - { name: prompt_tokens, dtype: int32, layout: packed }
+      - { name: model_weights, source: gds_nvme, dtype: bf16, layout: row_major }
+    outputs:
+      - { name: next_token_logits, dtype: fp32, layout: row_major }
+    memory_footprint_mb: 16384
+    sm_footprint_mb: 64
+    token_budget: 4096                # active working context window
+    context_routing:
+      icm_layers: [L0_system, L1_persona, L2_instructions, L3_reference, L4_working]
+      prefetch_policy: attention_weighted
+      kv_cache_prune: true
+    kernel:
+      bundle: nexusrt.kernels.infer
+      entrypoint: decode_step
+    autoregressive:
+      max_new_tokens: 1024
+      prefill_chunk_tokens: 256
+      speculative_decoding: false
+    contract_enforced:
+      - memory_footprint
+      - sm_footprint
+      - token_budget
+      - kv_cache_residency
+
+  # --- Postprocess ----------------------------------------------------------
+  postprocess:
+    description: "Detokenize and format; copy to host only on final answer."
+    inputs:
+      - { name: next_token_logits, from: infer }
+    outputs:
+      - { name: final_text, dtype: uint8, layout: raw, destination: host }
+    memory_footprint_mb: 64
+    sm_footprint_mb: 16
+    token_budget: 1024
+    context_routing:
+      icm_layer: L4_working
+    kernel:
+      bundle: nexusrt.kernels.postprocess
+      entrypoint: detokenize_format
+    contract_enforced:
+      - memory_footprint
+      - sm_footprint
+      - host_copy_only_on_final: true
+
+# ---------------------------------------------------------------------------
+# Pipeline topology — explicit DAG over stages.
+# ---------------------------------------------------------------------------
+topology:
+  edges:
+    - { from: preprocess, to: train,    transfer: hbm_resident }
+    - { from: preprocess, to: infer,    transfer: hbm_resident }
+    - { from: train,      to: infer,    transfer: weights_pinned }
+    - { from: infer,      to: postprocess, transfer: hbm_resident }
+
+# ---------------------------------------------------------------------------
+# ICM-inspired review gates (optional, human-in-the-loop)
+# ---------------------------------------------------------------------------
+review_gates:
+  - name: pre_train_check
+    stage: train
+    trigger: on_first_step
+    description: "Validate dataset statistics before backward pass begins."
+    timeout_s: 30
+    auto_approve_if: "loss < 10.0"
+
+  - name: kv_cache_overflow_review
+    stage: infer
+    trigger: on_kv_cache_overflow
+    description: "Manual triage if KV-cache eviction policy rejects > 5% of slots."
+    timeout_s: 60
+    auto_approve_if: "always"
+
+  - name: final_output_review
+    stage: postprocess
+    trigger: on_final
+    description: "Optional human review before delivering the final text."
+    timeout_s: 0
+    auto_approve_if: "production_mode == true"
+
+# ---------------------------------------------------------------------------
+# Routing rules — select which ICM context layers a stage may access.
+# ---------------------------------------------------------------------------
+routing:
+  default_policy: deny                # stages may only access declared layers
+  allow_cross_stage_share: true       # L3_reference can be shared across train↔infer
+  spill_target: gds_nvme              # where to spill over-budget context
+  spill_metric: nexusrt.token.spill

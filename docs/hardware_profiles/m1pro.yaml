@@ -1,0 +1,104 @@
+# Apple M1 Pro Hardware Profile
+# ============================================================================
+# Apple Silicon unified memory architecture. CPU and GPU share physical
+# LPDDR5 memory — no separate VRAM, no CPU↔GPU copy, no page-fault-driven
+# migration.
+#
+# This is the fallback path when no NVIDIA GPU is detected. TMA / ILC /
+# DSM / GDS / GRDMA are all unavailable. The fault handler is a no-op.
+
+vendor: apple
+architecture: apple_silicon
+compute_capability: "metal-3.0"
+metal_device_names:
+  - "Apple M1 Pro"
+  - "Apple M1 Max"
+  - "Apple M2 Pro"
+  - "Apple M2 Max"
+
+hbm:
+  capacity_gb: 16                  # 16 or 32 GB SKUs
+  bandwidth_gbs: 200               # ~200 GB/s LPDDR5
+  type: LPDDR5
+  page_size_kb: 16
+  prefetch_depth: 2                # prefetch is a no-op; placeholder
+
+nvlink:
+  generation: 0
+  bandwidth_gbs: 0
+  num_links: 0
+
+sm:
+  count: 16                        # 16 GPU cores on M1 Pro
+  max_threads_per_sm: 1024
+  smem_per_sm_kb: 32               # Metal threadgroup memory
+  warp_size: 32                    # Metal SIMD group
+
+features:
+  tma: false
+  ilc: false
+  dsm: false
+  thread_block_clusters: false
+  grdma: false
+  gds: false
+  cp_async: false
+  async_barrier: false
+  bf16: true                       # via Metal packed math
+  tf32: false
+  fp8: false
+  unified_native: true             # CPU/GPU share physical memory
+
+tuning:
+  warp_specialization_queues: 1    # no warp specialization on Apple
+  stream_pool_size: 4
+  l2_residence_controls: false
+  graph_capture_preferred: false
+  async_copy_strategy: blit_encoder
+  tma_tile_shape: null
+  ilc_enabled: false
+  dsm_cluster_size: 1
+  prefetch_distance_tokens: 0
+  eviction_policy: lru             # no refcount pinning needed
+  page_table_initial_slots: 0      # no page table on unified memory
+  fault_buffer_slots: 0
+
+# Metal-specific tuning
+metal:
+  max_buffer_size_gb: 14           # leave 2GB headroom on 16GB SKU
+  use_unified_memory: true
+  buffer_storage_mode: MTLResourceStorageModeShared
+  command_queue_max_active: 4
+  use_indirect_command_buffers: true
+  mlx_interop_enabled: true
+  recommended_max_working_set_size_gb: 13.8   # Metal's hint
+
+# Kernel tuning — Metal compute kernels
+kernel_tuning:
+  attention:
+    threadgroup_size: [32, 32]
+    simd_group_size: 32
+    use_threadgroup_memory_kb: 16
+  mlp:
+    threadgroup_size: [64, 64]
+    simd_group_size: 32
+    use_threadgroup_memory_kb: 8
+  softmax:
+    threadgroup_size: [1024]
+    simd_group_size: 32
+  layernorm:
+    threadgroup_size: [1024]
+    simd_group_size: 32
+
+# Power / thermal envelope
+power:
+  tdp_watts: 30                    # M1 Pro package
+  sustained_tdp_watts: 20
+  clock_lock_mhz: 0                # no DVFS control on Apple Silicon
+  memory_lock_mhz: 0
+
+# Fallback paths
+fallbacks:
+  - trigger: "working_set > recommended_max_working_set_size"
+    action: "log metal_overflow metric; Metal will swap to host memory transparently"
+  - trigger: "Metal unavailable (non-macOS host)"
+    action: "boot() returns DeviceNotFound; caller should fall back to CPU"

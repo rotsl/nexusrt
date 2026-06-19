@@ -1,0 +1,138 @@
+# NexusRT Hardware Profile Catalog
+# ============================================================================
+# Auto-loaded at firmware init. Selects device-specific defaults that the
+# scheduler, memory manager, and platform dispatch layer consume.
+#
+# A "profile" is selected by:
+#   1. PCI device ID (NVIDIA) — primary
+#   2. Metal device name (Apple) — fallback
+#   3. NEXUSRT_PROFILE env var — manual override
+#
+# Per-profile fields are documented inline.
+
+default_profile: auto        # auto-detect at runtime
+
+profiles:
+
+  # --------------------------------------------------------------------------
+  # NVIDIA A100 (Ampere) — 40/80 GB HBM2e
+  # No TMA, no ILC, relies on async copy + warp specialization
+  # --------------------------------------------------------------------------
+  a100:
+    vendor: nvidia
+    architecture: ampere
+    compute_capability: "8.0"
+    hbm:
+      capacity_gb: 80
+      bandwidth_gbs: 2039            # ~2 TB/s effective for SXM4 80GB
+      page_size_kb: 64               # default huge page on Ampere
+      prefetch_depth: 4
+    nvlink:
+      generation: 3
+      bandwidth_gbs: 600
+      num_links: 12
+    smem_per_sm_kb: 164
+    max_threads_per_sm: 2048
+    features:
+      tma: false
+      ilc: false                     # Inline Compression
+      dsm: false                     # Distributed Shared Memory via clusters
+      thread_block_clusters: false
+      grdma: true                    # GPUDirect RDMA
+      gds: true                      # GPUDirect Storage
+    tuning:
+      warp_specialization_queues: 2  # producer / consumer
+      stream_pool_size: 8
+      l2_residence_controls: true
+      graph_capture_preferred: true
+      async_copy_strategy: cp_async  # Ampere async copy via cp.async
+      tma_tile_shape: null           # N/A on A100
+      ilc_enabled: false
+
+  # --------------------------------------------------------------------------
+  # NVIDIA H100 (Hopper) — 80 GB HBM3
+  # TMA + ILC + DSM via Thread Block Clusters
+  # --------------------------------------------------------------------------
+  h100:
+    vendor: nvidia
+    architecture: hopper
+    compute_capability: "9.0"
+    hbm:
+      capacity_gb: 80
+      bandwidth_gbs: 3352            # ~3.35 TB/s peak
+      page_size_kb: 128              # larger pages exploit HBM3 burst length
+      prefetch_depth: 8
+    nvlink:
+      generation: 4
+      bandwidth_gbs: 900
+      num_links: 18
+    smem_per_sm_kb: 228
+    max_threads_per_sm: 2048
+    features:
+      tma: true
+      ilc: true
+      dsm: true
+      thread_block_clusters: true
+      grdma: true
+      gds: true
+    tuning:
+      warp_specialization_queues: 4  # data-prefetch / data-evict / compute / fence
+      stream_pool_size: 16
+      l2_residence_controls: true
+      graph_capture_preferred: true
+      async_copy_strategy: tma       # Hopper TMA descriptor-based copy
+      tma_tile_shape: [128, 128]     # default 2-D tile, override per-kernel
+      tma_swizzle: 128B
+      ilc_enabled: true              # enable transparent ILC on allocations
+      dsm_cluster_size: 8            # thread blocks per cluster
+
+  # --------------------------------------------------------------------------
+  # Apple M1 Pro — unified LPDDR5
+  # No TMA / ILC / NVLink. Uses Metal compute + MLX unified memory.
+  # --------------------------------------------------------------------------
+  m1pro:
+    vendor: apple
+    architecture: apple_silicon
+    compute_capability: "metal-3.0"
+    hbm:
+      capacity_gb: 16                # 16 or 32 GB SKUs
+      bandwidth_gbs: 200             # ~200 GB/s LPDDR5
+      page_size_kb: 16
+      prefetch_depth: 2
+    nvlink:
+      generation: 0
+      bandwidth_gbs: 0
+      num_links: 0
+    smem_per_sm_kb: 32               # Metal threadgroup memory
+    max_threads_per_sm: 1024
+    features:
+      tma: false
+      ilc: false
+      dsm: false
+      thread_block_clusters: false
+      grdma: false
+      gds: false
+      unified_memory_native: true    # CPU/GPU share physical memory
+    tuning:
+      warp_specialization_queues: 1
+      stream_pool_size: 4
+      l2_residence_controls: false
+      graph_capture_preferred: false
+      async_copy_strategy: blit_encoder
+      tma_tile_shape: null
+      ilc_enabled: false
+      metal_max_buffer_size_gb: 14   # leave headroom for OS
+      metal_use_unified_memory: true
+      mlx_interop_enabled: true
+
+# Detection overrides — used by the platform layer to disambiguate.
+detection:
+  nvidia_pci_ids:
+    a100_40gb: ["20B5", "20B6", "20B7"]
+    a100_80gb: ["20F1", "20F2"]
+    h100_sxm:  ["2330", "2331", "2339"]
+    h100_pcie: ["2339", "233A"]
+  apple_metal_names:
+    m1_pro: ["Apple M1 Pro"]
+    m1_max: ["Apple M1 Max"]
+    m2_pro: ["Apple M2 Pro"]

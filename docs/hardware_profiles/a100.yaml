@@ -1,0 +1,89 @@
+# NVIDIA A100 Hardware Profile
+# ============================================================================
+# Ampere architecture, SXM4 form factor. 40 GB or 80 GB HBM2e.
+# No TMA, no ILC, no DSM. Relies on async copy (cp.async) + warp
+# specialization for compute/DMA overlap.
+
+vendor: nvidia
+architecture: ampere
+compute_capability: "8.0"
+pci_ids:
+  a100_40gb: ["20B5", "20B6", "20B7"]
+  a100_80gb: ["20F1", "20F2"]
+
+hbm:
+  capacity_gb: 80                  # 40 or 80 GB SKUs
+  bandwidth_gbs: 2039              # ~2 TB/s effective
+  type: HBM2e
+  burst_length: 32
+  channels: 8
+  page_size_kb: 64
+  huge_page_mb: 2
+  prefetch_depth: 4
+
+nvlink:
+  generation: 3
+  bandwidth_gbs: 600
+  num_links: 12
+  topology: fully_connected_8gpu   # DGX A100
+
+sm:
+  count: 108                       # SXM4 80GB variant
+  max_threads_per_sm: 2048
+  smem_per_sm_kb: 164
+  smem_config_default: 100KB_sm_64KB_l1
+  warp_size: 32
+
+features:
+  tma: false
+  ilc: false
+  dsm: false
+  thread_block_clusters: false
+  grdma: true
+  gds: true
+  cp_async: true                   # Ampere async copy via cp.async
+  async_barrier: false             # No mbarrier intrinsics
+  bf16: true
+  tf32: true
+
+tuning:
+  warp_specialization_queues: 2    # producer / consumer
+  stream_pool_size: 8
+  l2_residence_controls: true
+  l2_cache_size_mb: 40
+  graph_capture_preferred: true
+  async_copy_strategy: cp_async
+  tma_tile_shape: null             # N/A on A100
+  ilc_enabled: false
+  dsm_cluster_size: 1              # No clusters
+  prefetch_distance_tokens: 2
+  eviction_policy: lru_refcount
+  page_table_initial_slots: 65536
+  fault_buffer_slots: 4096
+
+# A100-specific kernel tuning knobs
+kernel_tuning:
+  attention:
+    block_m: 128                   # query block
+    block_n: 64                    # key/value block
+    num_warps: 8
+    stages: 2                      # double-buffer
+  mlp:
+    block_m: 128
+    block_n: 128
+    num_warps: 8
+    stages: 3                      # triple-buffer for matmul
+  softmax:
+    block_size: 1024
+    num_warps: 4
+  layernorm:
+    block_size: 1024
+    num_warps: 4
+    use_rsqrt: true
+
+# Power / thermal envelope
+power:
+  tdp_watts: 400
+  sustained_tdp_watts: 350
+  clock_lock_mhz: 1410             # base SM clock
+  memory_lock_mhz: 1593            # HBM2e base clock

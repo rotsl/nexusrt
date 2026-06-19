@@ -1,0 +1,19 @@
+# Coverage configuration — enforce ≥85% for core modules.
+[run]
+source =
+    nexusrt
+branch = True
+data_file = .coverage
+
+[report]
+show_missing = True
+skip_covered = False
+exclude_lines =
+    pragma: no cover
+    raise NotImplementedError
+    if __name__ == .__main__.:
+    GTEST_SKIP
+fail_under = 85
+
+[html]
+directory = htmlcov
