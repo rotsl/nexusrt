@@ -17,6 +17,11 @@ on:
         required: true
         type: boolean
         default: true
+      build_macos:
+        description: "Also compile a native macOS artifact"
+        required: true
+        type: boolean
+        default: false
       build_cuda:
         description: "Also compile a CUDA-enabled Linux artifact"
         required: true
@@ -141,7 +146,8 @@ jobs:
 
   native-macos:
     name: Native macOS artifact
-    runs-on: macos-13
+    if: ${{ inputs.build_macos }}
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -167,13 +173,14 @@ jobs:
         run: |
           set -euxo pipefail
           short_sha="$(git rev-parse --short HEAD)"
-          prefix="$PWD/dist/nexusrt-macos-x86_64-${ARTIFACT_LABEL}-${short_sha}"
+          arch="$(uname -m)"
+          prefix="$PWD/dist/nexusrt-macos-${arch}-${ARTIFACT_LABEL}-${short_sha}"
           cmake --install packaging/build --prefix "$prefix"
           tar -C dist -czf "${prefix}.tar.gz" "$(basename "$prefix")"
 
       - uses: actions/upload-artifact@v4
         with:
-          name: nexusrt-macos-x86_64-${{ env.ARTIFACT_LABEL }}
+          name: nexusrt-macos-${{ env.ARTIFACT_LABEL }}
           path: dist/*.tar.gz
           if-no-files-found: error
 

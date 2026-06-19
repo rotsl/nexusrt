@@ -235,13 +235,16 @@ The workflow uploads:
 
 - source archives (`.tar.gz` and `.zip`)
 - a Python wheel
-- native Linux and macOS CMake install archives
+- native Linux CMake install archive
+- optional native macOS CMake install archive
 - optional Linux CUDA 12 compile artifact
 - optional HTML documentation
 
-The CUDA artifact is disabled by default because it installs the CUDA Toolkit
-during the workflow run. Enable `build_cuda` when you specifically want a
-CUDA-enabled Linux build archive.
+The macOS artifact is disabled by default because GitHub-hosted macOS runners
+can sit in the queue for a long time on manual runs. Enable `build_macos` when
+you specifically want a macOS archive. The CUDA artifact is also disabled by
+default because it installs the CUDA Toolkit during the workflow run. Enable
+`build_cuda` when you specifically want a CUDA-enabled Linux build archive.
 
 ### Minimal Python usage
 

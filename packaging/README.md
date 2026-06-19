@@ -68,13 +68,16 @@ downloadable artifacts from the GitHub Actions run page:
 
 - source `.tar.gz` and `.zip` archives
 - Python wheel
-- native Linux and macOS CMake install archives
+- native Linux CMake install archive
+- optional native macOS CMake install archive
 - optional Linux CUDA 12 archive
 - optional HTML docs
 
 Run it from Actions -> Manual Artifact Build -> Run workflow. Keep
-`build_cuda` disabled unless you want the workflow to install CUDA Toolkit 12
-and compile the CUDA-enabled Linux artifact.
+`build_macos` disabled unless you specifically need a macOS archive, because
+hosted macOS runners may queue for a long time. Keep `build_cuda` disabled
+unless you want the workflow to install CUDA Toolkit 12 and compile the
+CUDA-enabled Linux artifact.
 
 ## Build a wheel
 
