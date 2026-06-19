@@ -1,5 +1,7 @@
 # NexusRT - firmware-centric OS-bypass runtime for end-to-end LLM pipelines
 
+[![Manual Artifact Build](https://github.com/rotsl/nexusrt/actions/workflows/manual-artifacts.yml/badge.svg)](https://github.com/rotsl/nexusrt/actions/workflows/manual-artifacts.yml)
+
 NexusRT is a firmware-centric, OS-bypass runtime architecture for end-to-end LLM
 workloads (preprocessing -> training -> inference -> postprocessing) that operates
 below standard AI frameworks (PyTorch / TensorFlow / JAX). It targets

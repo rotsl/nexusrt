@@ -16,4 +16,3 @@ add_library(nexusrt_platform STATIC ${NEXUSRT_PLATFORM_SOURCES})
 target_compile_features(nexusrt_platform PUBLIC cxx_std_17)
 target_include_directories(nexusrt_platform
     PUBLIC ${NEXUSRT_REPO_ROOT}/src ${NEXUSRT_REPO_ROOT}/include)
-target_link_libraries(nexusrt_platform PUBLIC nexusrt_firmware)

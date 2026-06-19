@@ -1,5 +1,8 @@
 # NexusRT Sphinx configuration.
-import os, sys
+import os
+import sys
+from pathlib import Path
+
 sys.path.insert(0, os.path.abspath(".."))
 
 project = "NexusRT"
@@ -10,17 +13,14 @@ extensions = [
     "myst_parser",
     "sphinx.ext.autodoc",
     "sphinx.ext.napoleon",
-    "sphinx.ext.intersphinx",
     "sphinx.ext.viewcode",
 ]
-myst_enable_extensions = ["colon_fence", "deflist", "table"]
-source_suffix = [".rst", ".md"]
+myst_enable_extensions = ["colon_fence", "deflist"]
+source_suffix = {
+    ".rst": "restructuredtext",
+    ".md": "markdown",
+}
 master_doc = "index"
 html_theme = "sphinx_rtd_theme"
-html_static_path = ["_static"]
-exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
-
-intersphinx_mapping = {
-    "python": ("https://docs.python.org/3", None),
-    "numpy":  ("https://numpy.org/doc/stable/", None),
-}
+html_static_path = ["_static"] if Path("_static").exists() else []
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", "README.md"]

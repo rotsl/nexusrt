@@ -1,5 +1,5 @@
 NexusRT Documentation
-====================
+=====================
 
 .. toctree::
    :maxdepth: 2

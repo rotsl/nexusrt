@@ -116,6 +116,50 @@ if(NEXUSRT_BUILD_TESTS)
     add_subdirectory(${NEXUSRT_REPO_ROOT}/tests/unit ${CMAKE_BINARY_DIR}/tests/unit)
 endif()
 
+# GNU ld scans static archives from left to right, while these core libraries
+# intentionally reference each other across firmware, platform, and memory
+# boundaries. Use a linker rescan group where available, with a repeated-list
+# fallback for linkers that do not expose start/end-group semantics.
+set(NEXUSRT_CORE_STATIC_LIBS
+    nexusrt_firmware
+    nexusrt_platform
+    nexusrt_memory
+    nexusrt_scheduler
+    nexusrt_token_opt
+    nexusrt_pipeline
+)
+list(JOIN NEXUSRT_CORE_STATIC_LIBS "," NEXUSRT_CORE_LINK_GROUP_ITEMS)
+
+function(nexusrt_link_core_static target)
+    if(NOT TARGET ${target})
+        return()
+    endif()
+    if(APPLE)
+        return()
+    elseif(CMAKE_CXX_LINK_GROUP_USING_RESCAN_SUPPORTED)
+        target_link_libraries(${target}
+            PRIVATE "$<LINK_GROUP:RESCAN,${NEXUSRT_CORE_LINK_GROUP_ITEMS}>")
+    else()
+        target_link_libraries(${target}
+            PRIVATE ${NEXUSRT_CORE_STATIC_LIBS} ${NEXUSRT_CORE_STATIC_LIBS})
+    endif()
+endfunction()
+
+if(NEXUSRT_BUILD_TESTS)
+    foreach(t
+        nexusrt_firmware_selftest
+        nexusrt_memory_selftest
+        nexusrt_scheduler_selftest
+        nexusrt_token_opt_selftest
+        nexusrt_pipeline_selftest
+        test_firmware
+        test_memory
+        test_scheduler
+        test_token_opt)
+        nexusrt_link_core_static(${t})
+    endforeach()
+endif()
+
 # ---- Shared library target -------------------------------------------------
 add_library(nexusrt SHARED
     ${NEXUSRT_REPO_ROOT}/src/platform/abi_stubs.cpp
@@ -138,6 +182,7 @@ target_link_libraries(nexusrt PUBLIC
     nexusrt_token_opt
     nexusrt_pipeline
 )
+nexusrt_link_core_static(nexusrt)
 set_target_properties(nexusrt PROPERTIES
     VERSION ${PROJECT_VERSION}
     SOVERSION 0
