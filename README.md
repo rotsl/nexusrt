@@ -5,6 +5,7 @@
 [![CUDA 12.x](https://img.shields.io/badge/CUDA-12.x-76B900?logo=nvidia&logoColor=white)](https://github.com/rotsl/nexusrt)
 [![Metal / MLX](https://img.shields.io/badge/Apple-Metal%20%2F%20MLX-lightgrey?logo=apple)](https://github.com/rotsl/nexusrt)
 [![Status: Alpha](https://img.shields.io/badge/status-alpha-orange)](https://github.com/rotsl/nexusrt)
+[![Visitors](https://hits.sh/github.com/rotsl/nexusrt.svg?label=Visitors)](https://hits.sh/github.com/rotsl/nexusrt/)
 <img src="nexusrt-logo.JPG" align="right" width="160" alt="NexusRT logo">
 
 # NexusRT
