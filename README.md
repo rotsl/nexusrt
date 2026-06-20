@@ -1,6 +1,11 @@
 # NexusRT - firmware-centric OS-bypass runtime for end-to-end LLM pipelines
 
 [![Manual Artifact Build](https://github.com/rotsl/nexusrt/actions/workflows/manual-artifacts.yml/badge.svg)](https://github.com/rotsl/nexusrt/actions/workflows/manual-artifacts.yml)
+[![License: MIT](https://img.shields.io/github/license/rotsl/nexusrt)](https://github.com/rotsl/nexusrt/blob/main/LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://github.com/rotsl/nexusrt/blob/main/packaging/pyproject.toml)
+[![CUDA 12.x](https://img.shields.io/badge/CUDA-12.x-76B900?logo=nvidia&logoColor=white)](https://github.com/rotsl/nexusrt)
+[![Metal / MLX](https://img.shields.io/badge/Apple-Metal%20%2F%20MLX-lightgrey?logo=apple)](https://github.com/rotsl/nexusrt)
+[![Status: Alpha](https://img.shields.io/badge/status-alpha-orange)](https://github.com/rotsl/nexusrt)
 
 NexusRT is a firmware-centric, OS-bypass runtime architecture for end-to-end LLM
 workloads (preprocessing -> training -> inference -> postprocessing) that operates
