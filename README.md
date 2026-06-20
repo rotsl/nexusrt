@@ -5,7 +5,11 @@
 [![CUDA 12.x](https://img.shields.io/badge/CUDA-12.x-76B900?logo=nvidia&logoColor=white)](https://github.com/rotsl/nexusrt)
 [![Metal / MLX](https://img.shields.io/badge/Apple-Metal%20%2F%20MLX-lightgrey?logo=apple)](https://github.com/rotsl/nexusrt)
 [![Status: Alpha](https://img.shields.io/badge/status-alpha-orange)](https://github.com/rotsl/nexusrt)
+<img src="assets/nexusrt-logo.JPG" align="right" width="160" alt="NexusRT logo">
 
+# NexusRT
+
+Your README intro text here...
 NexusRT is a firmware-centric, OS-bypass runtime architecture for end-to-end LLM
 workloads (preprocessing -> training -> inference -> postprocessing) that operates
 below standard AI frameworks (PyTorch / TensorFlow / JAX). It targets
